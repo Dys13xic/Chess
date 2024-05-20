@@ -1,51 +1,59 @@
 import pieces.Piece;
+import pieces.Piece.Colour;
 
 public class Board {
-    Piece[][] currentBoard;
-    Piece[][] futureBoard;
+    Piece[][] squares;
+    Colour activeColour;
+    int move;
+    int halfMoveClock; 
 
     /**
      * Set the board position to match the specified FEN
      */
-    private void loadFen(Board board, String fen) {
+    private boolean loadFen(Board board, String fen) {
+        // Validate FEN structure
+        if(board == null || !fen.matches("^([rnbqkpRNBQKP1-8]{1,8}\\/){7}[rnbqkpRNBQKP1-8]{1,8}\\s[w,b]\\s([kqKQ]{1,4}|-)\\s(([a-h][3,6])|-)\\s\\d{1,3}\\s\\d{1,3}$"))
+            return false;
 
-        // TODO verify board is not null
-        // TODO validate fen format?
+        String[] fields = fen.split(" ");
 
-        int r = 0;
-        int c = 0;
-        char currentChar;
+        // TODO set all board squares to null? (i.e. clean the board before loading a new FEN)
 
-        for (int i = 0; i < fen.length(); i++) {
-            currentChar = fen.charAt(i);
+        // Position
+        String[] position = fields[0].split("/");
 
-            switch(currentChar) {
-                case 'p':
-                
-                case 'r':
+        for (int rank = 0; rank < position.length; rank++) {
+            int numSquares = 0;
+            for (int file = 0; file < position[rank].length(); file++) {
+                switch(position[rank].charAt(file)) {
 
-                case 'n':
-
-                case 'b':
-
-                case 'q':
-
-                case 'k':
-
-                default:
-
-
+                }
             }
-
         }
+
+        // Active Colour
+        activeColour = fields[1].equals("w") ? Colour.WHITE : Colour.BLACK;
+
+        // TODO Castle Rights
+        // If king has moved or rook has moved Castle Rights must accurately reflect that.
+
+        // TODO En Passant
+
+        // Move & Half Move Clock
+        halfMoveClock = Integer.parseInt(fields[4]);
+        move = Integer.parseInt(fields[5]);
+
+        return true;
     }
 
     public Board() {
+        // Load starting position.
+        loadFen(this, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
     }
 
     public Board(String fen) {
-        if()
+        loadFen(this, fen);
     }
 
 }
