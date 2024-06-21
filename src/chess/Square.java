@@ -16,10 +16,14 @@ public class Square {
 
     private Colour colour;
     private Piece piece;
+    private int rank;
+    private int file;
 
-    Square(Colour colour, Piece piece) {
+    Square(Colour colour, Piece piece, int rank, int file) {
         this.colour = colour;
         this.piece = piece;
+        this.rank = rank;
+        this.file = file;
     }
 
     public Colour getColour() {
@@ -34,7 +38,31 @@ public class Square {
         this.piece = piece;
     }
 
-    public boolean hasPiece() {
-        return piece == null;
+    public int getRank() {
+        return rank;
+    }
+
+    public int getFile() {
+        return file;
+    }
+
+    /**
+     * Draws the current square and any piece occupying that square.
+     */
+    public void draw() {
+        String output;
+        Piece piece = getPiece();
+        String colourCode;
+        
+        // Draw piece if one exists
+        if (piece != null) {
+            output = (piece.getSymbol() + " ");
+            colourCode = Graphics.mergeColours(piece.getColour().ansiString, getColour().ansiString);
+        }
+        else {
+            output = ("  ");
+            colourCode = getColour().ansiString;
+        }
+        System.out.print(colourCode + output + Graphics.ANSI_RESET_COLOUR);
     }
 }

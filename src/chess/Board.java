@@ -8,51 +8,79 @@ import chess.pieces.Piece;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
 import chess.pieces.Piece.Type;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Board {
-
-    // TODO place into seperate class?
-    public static final String RESET_COLOUR = "\u001B[0m";
     
-    Square[][] grid;
-    ArrayList<Piece> pieces;
-    Piece.Colour activePlayer;
-    int halfMoveClock;
-    int move;
+    private Square[][] grid;
+    private ArrayList<Piece> pieces;
+    private Piece.Colour activePlayer;
+    private int halfMoveClock;
+    private int moveCount;
 
     public Board() {
         grid = new Square[8][8];    // TODO replace magic numbers with named constant
         // Instantiate grid squares
-        for (int row = 0; row < grid.length; row++) {
-            for (int file = 0; file < grid[row].length; file++) {
+        for (int rank = 0; rank < grid.length; rank++) {
+            for (int file = 0; file < grid[rank].length; file++) {
                 Square.Colour squareColour;
-                if((row + file) % 2 == 0) {
+                if((rank + file) % 2 == 0) {
                     squareColour = Square.Colour.DARK;
                 }
                 else {
                     squareColour = Square.Colour.LIGHT;
                 }
-                grid[row][file] = new Square(squareColour, null);
+                grid[rank][file] = new Square(squareColour, null, rank, file);
             }
         }
 
         pieces = new ArrayList<Piece>();
         activePlayer = Piece.Colour.WHITE;
         halfMoveClock = 0;
-        move = 1;
+        moveCount = 1;
     }
 
     public Board(String fen) {
         this();
-        this.loadFen(fen);
+        loadFen(fen);
+    }
+
+    public Square[][] getGrid() {
+        return grid;
+    }
+
+    public Square getSquareAt(int rank, int file) {
+        if((rank < 0 || rank >= 8) || (file < 0 || file >= 8)) { // TODO replace magic numbers (should I create a helper method to check valid board position?)
+            // TODO throw exception
+        }
+
+        Square[][] tempGrid = getGrid();
+        return tempGrid[rank][file];
+    }
+
+    public Square getPieceSquare(Piece targetPiece) {
+        Square[][] tempGrid = getGrid();
+        
+        for (int rank = 0; rank < tempGrid.length; rank++) {
+            for (int file = 0; file < tempGrid[rank].length; file++) {
+                Square currentSquare = tempGrid[rank][file];
+                if (currentSquare.getPiece() == targetPiece) {
+                    return tempGrid[rank][file];
+                }
+            }
+        }
+
+        return null;
     }
 
     public ArrayList<Piece> getPieces() {
         return pieces;
     }
 
-    // TODO should there be a field to filter by row and column?
+    // TODO should there be a field to filter by rank and column?
     public ArrayList<Piece> getFilteredPieces(Piece.Colour pieceColour, Type type) {
 
         ArrayList<Piece> pieceList = getPieces();
@@ -75,12 +103,29 @@ public class Board {
         return filteredPieceList;
     }
 
+    public Piece.Colour getActivePlayer() {
+        return activePlayer;
+    }
+
+    int getHalfMoveClock() {
+        return halfMoveClock;
+    }
+
+    int getMoveCount() {
+        return moveCount;
+    }
+
+    private void insertPiece(Square targetSquare, Piece newPiece) {
+        targetSquare.setPiece(newPiece);
+        pieces.add(newPiece);
+    }
+
     /**
      * Set the board position to match the specified FEN
      */
     private void loadFen(String fen) {      // TODO clean up method
         // Validate FEN structure
-        if(!fen.matches("^([rnbqkpRNBQKP1-8]{1,8}\\/){7}[rnbqkpRNBQKP1-8]{1,8}\\s[w,b]\\s([kqKQ]{1,4}|-)\\s(([a-h][3,6])|-)\\s\\d{1,3}\\s\\d{1,3}$"))
+        if (!fen.matches("^([rnbqkpRNBQKP1-8]{1,8}\\/){7}[rnbqkpRNBQKP1-8]{1,8}\\s[w,b]\\s([kqKQ]{1,4}|-)\\s(([a-h][3,6])|-)\\s\\d{1,3}\\s\\d{1,3}$"))
             // TODO throw error
             System.out.println("placeholder");
 
@@ -88,6 +133,7 @@ public class Board {
 
         // 1 - Position
         String[] position = fields[0].split("/");
+        Collections.reverse(Arrays.asList(position));           // TODO should I replace this with more handwritten code?
 
         for (int rank = 0; rank < position.length; rank++) {
             int rankSquareCount = 0;
@@ -98,48 +144,48 @@ public class Board {
                     case 'p':
                         colour = Piece.Colour.BLACK;
                     case 'P':
-                        currentPiece = new Pawn(colour, rank, file, false); // TODO actually determine enpassant
-                        grid[rank][file].setPiece(currentPiece);
+                        currentPiece = new Pawn(colour, false); // TODO actually determine enpassant
+                        insertPiece(grid[rank][file], currentPiece);
                         rankSquareCount++;
                         break;
 
                     case 'r':
                         colour = Piece.Colour.BLACK;
                     case 'R':
-                        currentPiece = new Rook(colour, rank, file);
-                        grid[rank][file].setPiece(currentPiece);
+                        currentPiece = new Rook(colour);
+                        insertPiece(grid[rank][file], currentPiece);
                         rankSquareCount++;
                         break;
 
                     case 'n':
                         colour = Piece.Colour.BLACK;
                     case 'N':
-                        currentPiece = new Knight(colour, rank, file);
-                        grid[rank][file].setPiece(currentPiece);
+                        currentPiece = new Knight(colour);
+                        insertPiece(grid[rank][file], currentPiece);
                         rankSquareCount++;
                         break;
 
                     case 'b':
                         colour = Piece.Colour.BLACK;
                     case 'B':
-                        currentPiece = new Bishop(colour, rank, file);
-                        grid[rank][file].setPiece(currentPiece);
+                        currentPiece = new Bishop(colour);
+                        insertPiece(grid[rank][file], currentPiece);
                         rankSquareCount++;
                         break;
 
                     case 'q':
                         colour = Piece.Colour.BLACK;
                     case 'Q':
-                        currentPiece = new Queen(colour, rank, file);
-                        grid[rank][file].setPiece(currentPiece);
+                        currentPiece = new Queen(colour);
+                        insertPiece(grid[rank][file], currentPiece);
                         rankSquareCount++;
                         break;
 
                     case 'k':
                         colour = Piece.Colour.BLACK;
                     case 'K':
-                        currentPiece = new King(colour, rank, file, false); // TODO determine if in check
-                        grid[rank][file].setPiece(currentPiece);
+                        currentPiece = new King(colour, false); // TODO determine if in check
+                        insertPiece(grid[rank][file], currentPiece);
                         rankSquareCount++;
                         break;
 
@@ -178,28 +224,22 @@ public class Board {
 
         // TODO 4 - En Passant
 
-        // 5 & 6 - Move & Half Move Clock
+        // 5 & 6 - Move Count & Half Move Clock
         halfMoveClock = Integer.parseInt(fields[4]);
-        move = Integer.parseInt(fields[5]);
+        moveCount = Integer.parseInt(fields[5]);
 
-    }
-
-    /**
-     * Clears terminal screen and returns cursor to top-left using ANSI escape codes
-     */
-    private void clearDrawing() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
     }
 
     /**
      * Draws the chessboard's current state from top to bottom rank.
      */
-    public void draw() {
-        this.clearDrawing();
+    public void draw() {        // TODO add activePlayer parameter and allow printing from white or black perspective
+        Graphics.clearDrawing();
         for (int rank = grid.length - 1; rank >= 0; rank--) {
+            System.out.print((rank + 1) + " ");
             drawRank(grid[rank]);
         }
+        System.out.println("  ＡＢＣＤＥＦＧＨ");
     }
 
     /**
@@ -208,41 +248,9 @@ public class Board {
      */
     private void drawRank(Square[] rank) {
         for (int file = 0; file < rank.length; file++) {
-            drawSquare(rank[file]);
+            rank[file].draw();
         }
         System.out.print("\n");
     }
 
-    /**
-     * Draws the input chessboard square and any piece occupying that square.
-     * @param square
-     */
-    private void drawSquare(Square square) {
-        String output;
-        Piece piece = square.getPiece();
-        String colourCode;
-        
-        // Draw piece if one exists
-        if (piece != null) {
-            output = (piece.getSymbol() + " ");
-            colourCode = mergeColours(piece.getColour().ansiString, square.getColour().ansiString);
-        }
-        else {
-            output = ("  ");
-            colourCode = square.getColour().ansiString;
-        }
-        System.out.print(colourCode + output + RESET_COLOUR);
-    }
-
-    private String mergeColours(String foreground, String background) {
-        if(foreground == null || background == null) {  // TODO add regex check for formatting
-            // TODO throw exception
-        }
-        // Remove ANSI escape code terminating character 'm'
-        foreground = foreground.substring(0, foreground.length() -1 );
-        // Extract colour defining portion of ANSI escape code, i.e. remove "\033["
-        background = background.substring(2);
-
-        return (foreground + ';' + background);
-    }
 }
