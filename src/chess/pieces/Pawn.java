@@ -6,11 +6,12 @@ import chess.Square;
 public class Pawn extends Piece {
     private boolean enPassantTarget;
 
-    public Pawn(Colour colour, int rank, int file, boolean enPassantTarget) {
-        super(colour, Type.PAWN, rank, file);
+    public Pawn(Colour colour, boolean enPassantTarget) {
+        super(colour, Type.PAWN);
         this.enPassantTarget = enPassantTarget;
     }
 
+    @Override
     public char getSymbol() {
         return getColour() == Colour.WHITE ? '\u2659' : '\u265F';
     }

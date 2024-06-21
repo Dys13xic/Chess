@@ -1,7 +1,8 @@
 package chess.pieces;
 import chess.Board;
-// import chess.Colour;
 import chess.Square;
+
+import java.util.ArrayList;
 
 public abstract class Piece {
 
@@ -27,14 +28,10 @@ public abstract class Piece {
 
     private Colour colour;
     private Type type;
-    private int rank;
-    private int file;
 
-    public Piece(Colour colour, Type type, int rank, int file) {
+    public Piece(Colour colour, Type type) {
         this.colour = colour;
         this.type = type;
-        this.rank = rank;
-        this.file = file;
     }
 
     public Colour getColour() {
@@ -45,16 +42,9 @@ public abstract class Piece {
         return type;
     }
 
-    public int getRank() {
-        return rank;
-    }
-
-    public int getFile() {
-        return file;
-    }
-
     public abstract char getSymbol();
 
-    // public abstract Square[] legalMoves(Board board);
+    public abstract ArrayList<Piece> obstructingPieces(Board board, Square taretSquare);
 
+    // public abstract ArrayList<Square> legalMoves(Board board);
 }

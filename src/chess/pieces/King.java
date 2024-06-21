@@ -7,8 +7,8 @@ public class King extends Piece {
 
     private boolean inCheck;
 
-    public King(Colour colour, int rank, int file, boolean inCheck) {
-        super(colour, Type.KING, rank, file);
+    public King(Colour colour, boolean inCheck) {
+        super(colour, Type.KING);
         this.inCheck = inCheck;
     }
 
@@ -20,6 +20,7 @@ public class King extends Piece {
         this.inCheck = inCheck;
     }
 
+    @Override
     public char getSymbol() {
         return getColour() == Colour.WHITE ? '\u2654' : '\u265A';
     }

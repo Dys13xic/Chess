@@ -1,16 +1,50 @@
 package chess.pieces;
 
+import java.util.ArrayList;
+import java.lang.Math;
+
 import chess.Board;
 import chess.Square;
 
 public class Bishop extends Piece {
 
-    public Bishop(Colour colour, int rank, int file) {
-        super(colour, Type.BISHOP, rank, file);
+    public Bishop(Colour colour) {
+        super(colour, Type.BISHOP);
     }
 
+    @Override
     public char getSymbol() {
         return getColour() == Colour.WHITE ? '\u2657' : '\u265D';
+    }
+
+    public ArrayList<Piece> obstructingPieces(Board board, Square targetSquare) {
+        Square sourceSquare = board.getPieceSquare(this);
+        int sourceRank = sourceSquare.getRank();
+        int sourceFile = sourceSquare.getFile();
+        
+        int targetRank = targetSquare.getRank();
+        int targetFile = targetSquare.getFile();
+
+        int rankDifference = targetRank - sourceRank;
+        int fileDifference =  targetFile - sourceFile;
+
+        if (Math.abs(rankDifference) != Math.abs(fileDifference)) {
+            // Todo throw exception
+        }
+
+        int rankBias = (rankDifference > 0) ? 1 : -1;
+        int fileBias = (fileDifference > 0) ? 1 : -1;
+
+        ArrayList<Piece> pieces = new ArrayList<Piece>();
+
+        for (int rank = sourceRank + rankBias, file = sourceFile + fileBias; (rank * rankBias) <= (targetRank * rankBias); rank += rankBias, file += fileBias) {
+            Square currentSquare = board.getSquareAt(rank, file);
+            Piece currentPiece = currentSquare.getPiece();
+            if(currentPiece != null) {
+                pieces.add(currentPiece);
+            }
+        }
+        return pieces;
     }
 
     // @Override

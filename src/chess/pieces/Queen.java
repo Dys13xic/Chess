@@ -5,10 +5,11 @@ import chess.Square;
 
 public class Queen extends Piece {
 
-    public Queen(Colour colour, int rank, int file) {
-        super(colour, Type.QUEEN, rank, file);
+    public Queen(Colour colour) {
+        super(colour, Type.QUEEN);
     }
 
+    @Override
     public char getSymbol() {
         return getColour() == Colour.WHITE ? '\u2655' : '\u265B';
     }

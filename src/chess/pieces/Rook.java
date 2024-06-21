@@ -5,10 +5,11 @@ import chess.Square;
 
 public class Rook extends Piece {
 
-    public Rook(Colour colour, int rank, int file) {
-        super(colour, Type.ROOK, rank, file);
+    public Rook(Colour colour) {
+        super(colour, Type.ROOK);
     }
 
+    @Override
     public char getSymbol() {
         return getColour() == Colour.WHITE ? '\u2656' : '\u265C';
     }
