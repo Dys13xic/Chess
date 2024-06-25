@@ -10,9 +10,9 @@ public class Main {
         chessboard.draw();
 
         ArrayList<Piece> bishops = chessboard.getFilteredPieces(Piece.Colour.BLACK, Piece.Type.BISHOP);
-        Piece bishop = bishops.get(1);
+        Piece bishop = bishops.get(0);
 
-        ArrayList<Piece> blockingPieces = bishop.obstructingPieces(chessboard, chessboard.getSquareAt(5, 0));
+        ArrayList<Piece> blockingPieces = bishop.obstructingPieces(chessboard, chessboard.getSquareAt(2, 7));
 
         for (int i = 0; i < blockingPieces.size(); i++) {
             Square temp = chessboard.getPieceSquare(blockingPieces.get(i));

@@ -18,6 +18,7 @@ public class Bishop extends Piece {
     }
 
     public ArrayList<Piece> obstructingPieces(Board board, Square targetSquare) {
+        // TODO throw exception if board or targetSquare are null
         Square sourceSquare = board.getPieceSquare(this);
         int sourceRank = sourceSquare.getRank();
         int sourceFile = sourceSquare.getFile();
@@ -32,6 +33,8 @@ public class Bishop extends Piece {
             // Todo throw exception
         }
 
+
+        // TODO rename to rank and file increment?
         int rankBias = (rankDifference > 0) ? 1 : -1;
         int fileBias = (fileDifference > 0) ? 1 : -1;
 

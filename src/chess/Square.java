@@ -20,6 +20,11 @@ public class Square {
     private int file;
 
     Square(Colour colour, Piece piece, int rank, int file) {
+
+        if (!Board.validPosition(rank, file)) {
+            // TODO throw exception
+        }
+
         this.colour = colour;
         this.piece = piece;
         this.rank = rank;

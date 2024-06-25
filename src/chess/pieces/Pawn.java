@@ -1,5 +1,7 @@
 package chess.pieces;
 
+import java.util.ArrayList;
+
 import chess.Board;
 import chess.Square;
 
@@ -14,6 +16,23 @@ public class Pawn extends Piece {
     @Override
     public char getSymbol() {
         return getColour() == Colour.WHITE ? '\u2659' : '\u265F';
+    }
+
+    @Override
+    public ArrayList<Piece> obstructingPieces(Board board, Square targetSquare) {
+        // TODO throw exception if board or targetSquare are null
+
+        // TODO handle double move
+        // TODO handle capture and en-passant capture?
+        Square sourceSquare = board.getPieceSquare(this);
+        int sourceRank = sourceSquare.getRank();
+        int sourceFile = sourceSquare.getFile();
+
+        int targetRank = targetSquare.getRank();
+        int targetFile = targetSquare.getFile();
+
+        int rankDifference = targetRank - sourceRank;
+        int fileDifference =  targetFile - sourceFile;
     }
     
     // @Override

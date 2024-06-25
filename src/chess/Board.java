@@ -14,6 +14,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Board {
+
+    public static final int RANK_COUNT = 8;
+    public static final int FILE_COUNT = 8;
     
     private Square[][] grid;
     private ArrayList<Piece> pieces;
@@ -22,7 +25,7 @@ public class Board {
     private int moveCount;
 
     public Board() {
-        grid = new Square[8][8];    // TODO replace magic numbers with named constant
+        grid = new Square[RANK_COUNT][FILE_COUNT];
         // Instantiate grid squares
         for (int rank = 0; rank < grid.length; rank++) {
             for (int file = 0; file < grid[rank].length; file++) {
@@ -53,7 +56,7 @@ public class Board {
     }
 
     public Square getSquareAt(int rank, int file) {
-        if((rank < 0 || rank >= 8) || (file < 0 || file >= 8)) { // TODO replace magic numbers (should I create a helper method to check valid board position?)
+        if (!validPosition(rank, file)) {
             // TODO throw exception
         }
 
@@ -196,7 +199,7 @@ public class Board {
                         }
                         int emptySquares = character - '0';
                         
-                        if (file + emptySquares < 8) {      // TODO replace magic number
+                        if (file + emptySquares < FILE_COUNT) {
                             for (int i = 0; i < emptySquares; i++) {
                                 grid[rank][file + i] = null;
                                 rankSquareCount++;
@@ -209,7 +212,7 @@ public class Board {
                         break;
                 }
             }
-            if (rankSquareCount != 8) {  // TODO replace magic number
+            if (rankSquareCount != RANK_COUNT) {
                 // TODO  Throw exception
             }
         }
@@ -231,7 +234,7 @@ public class Board {
     }
 
     /**
-     * Draws the chessboard's current state from top to bottom rank.
+     * Draws the chessboard's current state.
      */
     public void draw() {        // TODO add activePlayer parameter and allow printing from white or black perspective
         Graphics.clearDrawing();
@@ -251,6 +254,20 @@ public class Board {
             rank[file].draw();
         }
         System.out.print("\n");
+    }
+
+/**
+ * Determine's whether the input rank and file are within the chessboard's bounds.
+ * @param int rank
+ * @param file file
+ * @return valid
+ */
+    public static boolean validPosition(int rank, int file) {
+        boolean valid = false;
+        if((rank >= 0 && rank < RANK_COUNT) && (file >= 0 && file < FILE_COUNT)) {
+            valid = true;
+        }
+        return valid;
     }
 
 }

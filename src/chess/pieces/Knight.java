@@ -16,6 +16,32 @@ public class Knight extends Piece {
         return getColour() == Colour.WHITE ? '\u2658' : '\u265E';
     }
 
+    @Override
+    public ArrayList<Piece> obstructingPieces(Board board, Square targetSquare) {
+        // TODO throw exception if board or targetSquare are null
+        Square sourceSquare = board.getPieceSquare(this);
+        int sourceRank = sourceSquare.getRank();
+        int sourceFile = sourceSquare.getFile();
+
+        int targetRank = targetSquare.getRank();
+        int targetFile = targetSquare.getFile();
+
+        int rankDifference = targetRank - sourceRank;
+        int fileDifference =  targetFile - sourceFile;
+
+        if ((Math.abs(rankDifference) + Math.abs(fileDifference) != 3) || (Math.abs(rankDifference) != 1 && Math.abs(fileDifference) != 1)) {
+            // TODO throw exception
+        }
+
+        ArrayList<Piece> pieces = new ArrayList<Piece>();
+        Piece targetPiece = targetSquare.getPiece();
+        if (targetPiece != null) {
+            pieces.add(targetPiece);
+        }
+
+        return new ArrayList<Piece>();
+    }
+
     // @Override
     // public ArrayList<Square> legalMoves(Board board) {
     //     ArrayList<Square> validSquares = new ArrayList<Square>();
