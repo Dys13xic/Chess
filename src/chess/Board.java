@@ -19,7 +19,6 @@ public class Board {
     public static final int FILE_COUNT = 8;
     
     private Square[][] grid;
-    private ArrayList<Piece> pieces;
     private Piece.Colour activePlayer;
     private int halfMoveClock;
     private int moveCount;
@@ -40,7 +39,6 @@ public class Board {
             }
         }
 
-        pieces = new ArrayList<Piece>();
         activePlayer = Piece.Colour.WHITE;
         halfMoveClock = 0;
         moveCount = 1;
@@ -80,6 +78,17 @@ public class Board {
     }
 
     public ArrayList<Piece> getPieces() {
+        ArrayList<Piece> pieces = new ArrayList<Piece>();
+        
+        for (int rank = 0; rank < RANK_COUNT; rank++) {
+            for (int file = 0; file < FILE_COUNT; file++) {
+                Piece currentPiece = grid[rank][file].getPiece();
+
+                if (currentPiece != null) {
+                    pieces.add(currentPiece);
+                }
+            }
+        }
         return pieces;
     }
 
@@ -120,7 +129,6 @@ public class Board {
 
     private void insertPiece(Square targetSquare, Piece newPiece) {
         targetSquare.setPiece(newPiece);
-        pieces.add(newPiece);
     }
 
     /**
