@@ -19,21 +19,35 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public ArrayList<Piece> obstructingPieces(Board board, Square targetSquare) {
+    public boolean validMovementPattern(Board board, Square targetSquare) {
         // TODO throw exception if board or targetSquare are null
-
-        // TODO handle double move
-        // TODO handle capture and en-passant capture?
         Square sourceSquare = board.getPieceSquare(this);
-        int sourceRank = sourceSquare.getRank();
-        int sourceFile = sourceSquare.getFile();
+        int advanceIncrement = (sourceSquare.getPiece().getColour() == Colour.WHITE) ? 1 : -1;
+        int rankDifference = targetSquare.getRank() - sourceSquare.getRank();
+        int fileDifference =  targetSquare.getFile() - sourceSquare.getFile();
 
-        int targetRank = targetSquare.getRank();
-        int targetFile = targetSquare.getFile();
-
-        int rankDifference = targetRank - sourceRank;
-        int fileDifference =  targetFile - sourceFile;
+        if (rankDifference != advanceIncrement || (fileDifference >= -1 && fileDifference <= 1)) {
+            return false;
+        }
+        return true;
     }
+
+    // @Override
+    // public ArrayList<Piece> obstructingPieces(Board board, Square targetSquare) {
+    //     // TODO throw exception if board or targetSquare are null
+
+    //     // TODO handle double move
+    //     // TODO handle capture and en-passant capture?
+    //     Square sourceSquare = board.getPieceSquare(this);
+    //     int sourceRank = sourceSquare.getRank();
+    //     int sourceFile = sourceSquare.getFile();
+
+    //     int targetRank = targetSquare.getRank();
+    //     int targetFile = targetSquare.getFile();
+
+    //     int rankDifference = targetRank - sourceRank;
+    //     int fileDifference =  targetFile - sourceFile;
+    // }
     
     // @Override
     // public Square[] legalMoves(Board board) {

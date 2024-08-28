@@ -17,38 +17,63 @@ public class Bishop extends Piece {
         return getColour() == Colour.WHITE ? '\u2657' : '\u265D';
     }
 
-    public ArrayList<Piece> obstructingPieces(Board board, Square targetSquare) {
+    @Override
+    public boolean validMovementPattern(Board board, Square targetSquare) {
         // TODO throw exception if board or targetSquare are null
         Square sourceSquare = board.getPieceSquare(this);
-        int sourceRank = sourceSquare.getRank();
-        int sourceFile = sourceSquare.getFile();
-        
-        int targetRank = targetSquare.getRank();
-        int targetFile = targetSquare.getFile();
+        int rankDifference = targetSquare.getRank() - sourceSquare.getRank();
+        int fileDifference = targetSquare.getFile() - sourceSquare.getFile();
 
-        int rankDifference = targetRank - sourceRank;
-        int fileDifference =  targetFile - sourceFile;
-
-        if (Math.abs(rankDifference) != Math.abs(fileDifference)) {
-            // Todo throw exception
+        if (targetSquare == sourceSquare || Math.abs(rankDifference) != Math.abs(fileDifference)) {
+            return false;
         }
-
-
-        // TODO rename to rank and file increment?
-        int rankBias = (rankDifference > 0) ? 1 : -1;
-        int fileBias = (fileDifference > 0) ? 1 : -1;
-
-        ArrayList<Piece> pieces = new ArrayList<Piece>();
-
-        for (int rank = sourceRank + rankBias, file = sourceFile + fileBias; (rank * rankBias) <= (targetRank * rankBias); rank += rankBias, file += fileBias) {
-            Square currentSquare = board.getSquareAt(rank, file);
-            Piece currentPiece = currentSquare.getPiece();
-            if(currentPiece != null) {
-                pieces.add(currentPiece);
-            }
-        }
-        return pieces;
+        return true;
     }
+
+    // @Override
+    // public ArrayList<Piece> obstructingPieces(Board board, Square targetSquare) {
+    //     // TODO throw exception if board or targetSquare are null
+
+    //     if(!validMovementPattern(board, targetSquare)) {
+    //         // TODO throw exception
+    //     }
+
+    //     Square sourceSquare = board.getPieceSquare(this);
+    //     int sourceRank = sourceSquare.getRank();
+    //     int sourceFile = sourceSquare.getFile();
+    //     int targetRank = targetSquare.getRank();
+    //     int targetFile = targetSquare.getFile();
+
+    //     int rankDifference = targetRank - sourceRank;
+    //     int fileDifference =  targetFile - sourceFile;
+    //     int rankDirection = (rankDifference > 0) ? 1 : -1;
+    //     int fileDirection = (fileDifference > 0) ? 1 : -1;
+
+    //     ArrayList<Piece> pieces = new ArrayList<Piece>();
+    //     int rank = sourceRank + rankDirection;
+    //     int file = sourceFile + fileDirection;
+
+    //     while (rank != targetRank && file != targetFile) {
+    //         Piece currentPiece = board.getSquareAt(rank, file).getPiece();
+    //         if(currentPiece != null) {
+    //             pieces.add(currentPiece);
+    //         }
+    //         if (rank != targetRank) {
+    //             rank += rankDirection;
+    //         }
+    //         if (file != targetFile) {
+    //             file += fileDirection;
+    //         }
+    //     }
+
+    //     // If friendly piece exists on target square include in obstruction list.
+    //     Piece targetPiece = targetSquare.getPiece();
+    //     if(targetPiece != null && targetPiece.getColour() == getColour()) {
+    //         pieces.add(targetPiece);
+    //     }
+
+    //     return pieces;
+    // }
 
     // @Override
     // public Square[] legalMoves(Board board) {

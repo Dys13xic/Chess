@@ -17,25 +17,29 @@ public class Knight extends Piece {
     }
 
     @Override
-    public ArrayList<Piece> obstructingPieces(Board board, Square targetSquare) {
+    public boolean validMovementPattern(Board board, Square targetSquare) {
         // TODO throw exception if board or targetSquare are null
         Square sourceSquare = board.getPieceSquare(this);
-        int sourceRank = sourceSquare.getRank();
-        int sourceFile = sourceSquare.getFile();
+        int rankDifference = targetSquare.getRank() - sourceSquare.getRank();
+        int fileDifference =  targetSquare.getFile() - sourceSquare.getFile();
 
-        int targetRank = targetSquare.getRank();
-        int targetFile = targetSquare.getFile();
+        if ((Math.abs(rankDifference) != 2 && Math.abs(fileDifference) != 2) || (Math.abs(rankDifference) != 1 && Math.abs(fileDifference) != 1)) {
+            return false;
+        }
+        return true;
+    }
 
-        int rankDifference = targetRank - sourceRank;
-        int fileDifference =  targetFile - sourceFile;
-
-        if ((Math.abs(rankDifference) + Math.abs(fileDifference) != 3) || (Math.abs(rankDifference) != 1 && Math.abs(fileDifference) != 1)) {
+    @Override
+    public ArrayList<Piece> obstructingPieces(Board board, Square targetSquare) {
+        // TODO throw exception if board or targetSquare are null
+        
+        if(!validMovementPattern(board, targetSquare)) {
             // TODO throw exception
         }
 
         ArrayList<Piece> pieces = new ArrayList<Piece>();
         Piece targetPiece = targetSquare.getPiece();
-        if (targetPiece != null) {
+        if (targetPiece != null && targetPiece.getColour() == getColour()) {
             pieces.add(targetPiece);
         }
 
