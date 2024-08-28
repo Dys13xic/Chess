@@ -59,7 +59,6 @@ public class Square {
         Piece piece = getPiece();
         String colourCode;
         
-        // Draw piece if one exists
         if (piece != null) {
             output = (piece.getSymbol() + " ");
             colourCode = Graphics.mergeColours(piece.getColour().ansiString, getColour().ansiString);
