@@ -18,27 +18,24 @@ public class Board {
     public static final int RANK_COUNT = 8;
     public static final int FILE_COUNT = 8;
     
-    private Square[][] grid;
+    private Piece[][] grid;
     private Piece.Colour activePlayer;
     private int halfMoveClock;
     private int moveCount;
 
-    public Board() {
-        grid = new Square[RANK_COUNT][FILE_COUNT];
-        // Instantiate grid squares
-        for (int rank = 0; rank < grid.length; rank++) {
-            for (int file = 0; file < grid[rank].length; file++) {
-                Square.Colour squareColour;
-                if((rank + file) % 2 == 0) {
-                    squareColour = Square.Colour.DARK;
-                }
-                else {
-                    squareColour = Square.Colour.LIGHT;
-                }
-                grid[rank][file] = new Square(squareColour, null, rank, file);
-            }
-        }
+    public enum Square {
+        LIGHT("\033[48;5;222m"),
+        DARK("\033[48;5;94m");
 
+        public final String ansiString;
+
+        private Square(String ansiString) {
+            this.ansiString = ansiString;
+        }
+    }
+
+    public Board() {
+        grid = new Piece[RANK_COUNT][FILE_COUNT];
         activePlayer = Piece.Colour.WHITE;
         halfMoveClock = 0;
         moveCount = 1;
@@ -49,40 +46,12 @@ public class Board {
         loadFen(fen);
     }
 
-    public Square[][] getGrid() {
-        return grid;
-    }
-
-    public Square getSquareAt(int rank, int file) {
-        if (!validPosition(rank, file)) {
-            // TODO throw exception
-        }
-
-        Square[][] tempGrid = getGrid();
-        return tempGrid[rank][file];
-    }
-
-    public Square getPieceSquare(Piece targetPiece) {
-        Square[][] tempGrid = getGrid();
-        
-        for (int rank = 0; rank < tempGrid.length; rank++) {
-            for (int file = 0; file < tempGrid[rank].length; file++) {
-                Square currentSquare = tempGrid[rank][file];
-                if (currentSquare.getPiece() == targetPiece) {
-                    return tempGrid[rank][file];
-                }
-            }
-        }
-
-        return null;
-    }
-
     public ArrayList<Piece> getPieces() {
         ArrayList<Piece> pieces = new ArrayList<Piece>();
         
         for (int rank = 0; rank < RANK_COUNT; rank++) {
             for (int file = 0; file < FILE_COUNT; file++) {
-                Piece currentPiece = grid[rank][file].getPiece();
+                Piece currentPiece = grid[rank][file];
 
                 if (currentPiece != null) {
                     pieces.add(currentPiece);
@@ -127,8 +96,8 @@ public class Board {
         return moveCount;
     }
 
-    private void insertPiece(Square targetSquare, Piece newPiece) {
-        targetSquare.setPiece(newPiece);
+    private void insertPiece(int rank, int file, Piece newPiece) {
+        this.grid[rank][file] = newPiece;
     }
 
     /**
@@ -156,7 +125,7 @@ public class Board {
                         colour = Piece.Colour.BLACK;
                     case 'P':
                         currentPiece = new Pawn(colour, false); // TODO actually determine enpassant
-                        insertPiece(grid[rank][file], currentPiece);
+                        insertPiece(rank, file, currentPiece);
                         rankSquareCount++;
                         break;
 
@@ -164,7 +133,7 @@ public class Board {
                         colour = Piece.Colour.BLACK;
                     case 'R':
                         currentPiece = new Rook(colour);
-                        insertPiece(grid[rank][file], currentPiece);
+                        insertPiece(rank, file, currentPiece);
                         rankSquareCount++;
                         break;
 
@@ -172,7 +141,7 @@ public class Board {
                         colour = Piece.Colour.BLACK;
                     case 'N':
                         currentPiece = new Knight(colour);
-                        insertPiece(grid[rank][file], currentPiece);
+                        insertPiece(rank, file, currentPiece);
                         rankSquareCount++;
                         break;
 
@@ -180,7 +149,7 @@ public class Board {
                         colour = Piece.Colour.BLACK;
                     case 'B':
                         currentPiece = new Bishop(colour);
-                        insertPiece(grid[rank][file], currentPiece);
+                        insertPiece(rank, file, currentPiece);
                         rankSquareCount++;
                         break;
 
@@ -188,7 +157,7 @@ public class Board {
                         colour = Piece.Colour.BLACK;
                     case 'Q':
                         currentPiece = new Queen(colour);
-                        insertPiece(grid[rank][file], currentPiece);
+                        insertPiece(rank, file, currentPiece);
                         rankSquareCount++;
                         break;
 
@@ -196,7 +165,7 @@ public class Board {
                         colour = Piece.Colour.BLACK;
                     case 'K':
                         currentPiece = new King(colour, false); // TODO determine if in check
-                        insertPiece(grid[rank][file], currentPiece);
+                        insertPiece(rank, file, currentPiece);
                         rankSquareCount++;
                         break;
 
@@ -248,20 +217,36 @@ public class Board {
         Graphics.clearDrawing();
         for (int rank = grid.length - 1; rank >= 0; rank--) {
             System.out.print((rank + 1) + " ");
-            drawRank(grid[rank]);
+            for (int file = 0; file < grid[rank].length; file++) {
+                this.drawSquare(rank, file);
+            }
+            System.out.print("\n");
         }
         System.out.println("  ＡＢＣＤＥＦＧＨ");
     }
 
-    /**
-     * Draws the input chessboard rank.
-     * @param rank
-     */
-    private void drawRank(Square[] rank) {
-        for (int file = 0; file < rank.length; file++) {
-            rank[file].draw();
+    public void drawSquare(int rank, int file) {
+        String output;
+        Piece piece = this.grid[rank][file];
+        Square squareColour;
+        String colourCode;
+        
+        if((rank + file) % 2 == 0) {
+            squareColour = Square.DARK;
         }
-        System.out.print("\n");
+        else {
+            squareColour = Square.LIGHT;
+        }
+
+        if (piece != null) {
+            output = (piece.getSymbol() + " ");
+            colourCode = Graphics.mergeColours(piece.getColour().ansiString, squareColour.ansiString);
+        }
+        else {
+            output = ("  ");
+            colourCode = squareColour.ansiString;
+        }
+        System.out.print(colourCode + output + Graphics.ANSI_RESET_COLOUR);
     }
 
 /**
