@@ -4,34 +4,21 @@ import chess.pieces.Piece;
 
 public class Move {
     
-    // Types of moves
-    // - Standard
-    // - Castle
-    // - Offer Draw
-    // - Final Result
-
-    // Additional flags
-    // - Capture
-    // - Check
-    // - Mate
-    // - Promotion
-
     public enum Type {
         STANDARD,
         CASTLE,
-        DRAW_OFFER,
+        OFFER_DRAW,
         RESULT
-        
     }
 
-    String text;
-    Piece target;
-
-    Piece capture;
-    Piece promotion;
-
+    int move;
+    Type type;
+    Piece selected;
+    Piece captured;
+    Piece promotedTo;
     boolean check;
     boolean mate;
+    String notation;
 
     public Move(String text) {
 
