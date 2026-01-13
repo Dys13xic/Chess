@@ -12,7 +12,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public boolean validMovementPattern(int currentRank, int currnetFile) {
+    public boolean validMovementPattern(int currentRank, int currentFile) {
         // // TODO throw exception if board or targetSquare are null
         // Square sourceSquare = board.getPieceSquare(this);
         // int rankDifference = targetSquare.getRank() - sourceSquare.getRank();
