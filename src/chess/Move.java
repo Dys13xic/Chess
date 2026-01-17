@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 import chess.pieces.Piece;
 
@@ -10,8 +9,7 @@ public class Move {
     public enum Type {
         STANDARD,
         CASTLE,
-        OFFER_DRAW,
-        RESULT
+        OFFER_DRAW
     }
 
     public enum Check {
@@ -19,15 +17,16 @@ public class Move {
         MATE
     }
 
+    private static final Pattern NOTATION_PATTERN = Pattern.compile("^([NBRQK])?([a-h])?([1-8])?(x)?([a-h][1-8])(=[NBRQ])?(\\+|#)?$|^O-O(-O)?$");
+    private static final String PIECE_SYMBOLS = "NBRQK";
     private static final char START_RANK = '1';
     private static final char START_FILE = 'a';
     private static final char END_RANK = '8';
     private static final char END_FILE = 'h';
+    private static final String KINGSIDE_CASTLING = "O-O";
+    private static final String QUEENSIDE_CASTLING = "O-O-O";
 
-    private static final Pattern MOVE_PATTERN = Pattern.compile("^(((?<piece>[NBRQK])?(?<rank>[a-h])?(?<file>[1-8])?(?<capture>x)?(?<rankAndFile>[a-h][1-8])(?<promote>=[NBRQ])?)|(?<castle>O-O(-O)?))(?<check>[+#])?$");
-    private final String PIECE_LIST_STRING = "NBRQK";
-
-    // int move;
+    // static int move = 1;
     Type type;
     int sourceRank = -1;
     int sourceFile = -1;
@@ -65,9 +64,12 @@ public class Move {
     }
 
     public Move(String notation) {
-        //  TODO Validate the notation with regex.
+        //  Validate notation with regex.
+        if (NOTATION_PATTERN.matcher(notation).find() == false) {
+            throw new IllegalArgumentException();
+        }
 
-        // Check
+        // Check/Mate
         if (notation.endsWith("+")) {
             check = Check.STANDARD;
         }
@@ -75,17 +77,17 @@ public class Move {
             check = Check.MATE;
         }
 
-        // Draw
+        // Draw Offer
         if (notation.startsWith("=")) {
             type = Type.OFFER_DRAW;
         }
 
         // Castle
-        else if (notation.startsWith("O-O")) {
+        else if (notation.startsWith(KINGSIDE_CASTLING)) {
             type = Type.CASTLE;
             piece = Piece.Type.ROOK;
 
-            if (notation.startsWith("O-O-O")) {
+            if (notation.startsWith(QUEENSIDE_CASTLING)) {
                 sourceFile = fileCharToInt('h');
             }
             else {
@@ -95,30 +97,38 @@ public class Move {
 
         // Standard Move
         else {
+            type = Type.STANDARD;
             char current = notation.charAt(notation.length() - 1);
 
             for (int i = notation.length() - 1; i >= 0; i--) {
                 current = notation.charAt(i);
 
                 // Rank
-                if ('a' <= current && current <= 'h') {
+                if (START_RANK <= current && current <= END_RANK) {
                     if (targetRank == -1) targetRank = rankCharToInt(current);
                     else sourceRank = rankCharToInt(current);
                 }
                 // File
-                else if ('1' <= current && current <= '8') {
+                else if (START_FILE <= current && current <= END_FILE) {
                     if (targetFile == -1) targetFile = fileCharToInt(current);
                     else sourceFile = fileCharToInt(current);
                 }
                 // Piece
-                else if (PIECE_LIST_STRING.contains(Character.toString(current))) {
-                    if (i > 0 && notation.charAt(i - 1) == '=') {
-                        promotedTo = charToPieceType(current);
-                    }
-                    else {
+                else if (PIECE_SYMBOLS.contains(Character.toString(current))) {
+                    if (i == 0) {
                         piece = charToPieceType(current);
                     }
+                    else {
+                        promotedTo = charToPieceType(current);
+                    }
                 }
+                else if (current == 'x') {
+                    capture = true;
+                }
+            }
+
+            if (piece == null) {
+                piece = Piece.Type.PAWN;
             }
         }
     }
