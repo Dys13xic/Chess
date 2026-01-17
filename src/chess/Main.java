@@ -1,13 +1,19 @@
 package chess;
 
 import java.util.ArrayList;
-
-import chess.pieces.Piece;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         Board chessboard = new Board("rnbqkbnr/pppppppp/////PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        chessboard.draw();
+        Scanner scanner = new Scanner(System.in);
+        while (chessboard.isActive()) {
+            Graphics.drawBoard(chessboard);
+            System.out.print("Enter a move: ");
+            Move tentativeMove = new Move(scanner.nextLine());
+            // Board.move(tentativeMove);
+        }
+        scanner.close();
 
         // ArrayList<Piece> bishops = chessboard.getFilteredPieces(Piece.Colour.BLACK, Piece.Type.BISHOP);
         // Piece bishop = bishops.get(0);

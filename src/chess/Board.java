@@ -18,6 +18,7 @@ public class Board {
     public static final int RANK_COUNT = 8;
     public static final int FILE_COUNT = 8;
     
+    private boolean active = true;
     private Piece[][] grid;
     private Piece.Colour activePlayer;
     private int halfMoveClock;
@@ -46,6 +47,10 @@ public class Board {
         loadFen(fen);
     }
 
+    public Piece getPieceAt(int rank, int file) {
+        return grid[rank][file];
+    }
+
     public ArrayList<Piece> getPieces() {
         ArrayList<Piece> pieces = new ArrayList<Piece>();
         
@@ -59,6 +64,10 @@ public class Board {
             }
         }
         return pieces;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     // TODO should there be a field to filter by rank and column?
@@ -105,9 +114,9 @@ public class Board {
      */
     private void loadFen(String fen) {      // TODO clean up method
         // Validate FEN structure
-        if (!fen.matches("^([rnbqkpRNBQKP1-8]{1,8}\\/){7}[rnbqkpRNBQKP1-8]{1,8}\\s[w,b]\\s([kqKQ]{1,4}|-)\\s(([a-h][3,6])|-)\\s\\d{1,3}\\s\\d{1,3}$"))
-            // TODO throw error
-            System.out.println("placeholder");
+        if (!fen.matches("^([rnbqkpRNBQKP1-8]{1,8}\\/){7}[rnbqkpRNBQKP1-8]{1,8}\\s[w,b]\\s([kqKQ]{1,4}|-)\\s(([a-h][3,6])|-)\\s\\d{1,3}\\s\\d{1,3}$")) {
+            throw new IllegalArgumentException();
+        }
 
         String[] fields = fen.split(" ");
 
@@ -208,45 +217,6 @@ public class Board {
         halfMoveClock = Integer.parseInt(fields[4]);
         moveCount = Integer.parseInt(fields[5]);
 
-    }
-
-    /**
-     * Draws the chessboard's current state.
-     */
-    public void draw() {        // TODO add activePlayer parameter and allow printing from white or black perspective
-        Graphics.clearDrawing();
-        for (int rank = grid.length - 1; rank >= 0; rank--) {
-            System.out.print((rank + 1) + " ");
-            for (int file = 0; file < grid[rank].length; file++) {
-                this.drawSquare(rank, file);
-            }
-            System.out.print("\n");
-        }
-        System.out.println("  ＡＢＣＤＥＦＧＨ");
-    }
-
-    public void drawSquare(int rank, int file) {
-        String output;
-        Piece piece = this.grid[rank][file];
-        Square squareColour;
-        String colourCode;
-        
-        if((rank + file) % 2 == 0) {
-            squareColour = Square.DARK;
-        }
-        else {
-            squareColour = Square.LIGHT;
-        }
-
-        if (piece != null) {
-            output = (piece.getSymbol() + " ");
-            colourCode = Graphics.mergeColours(piece.getColour().ansiString, squareColour.ansiString);
-        }
-        else {
-            output = ("  ");
-            colourCode = squareColour.ansiString;
-        }
-        System.out.print(colourCode + output + Graphics.ANSI_RESET_COLOUR);
     }
 
 /**
