@@ -5,7 +5,7 @@ import chess.pieces.Piece.Type;
 
 import java.util.ArrayList;
 
-public class Board {
+public class Board implements BoardView {
     public static final int RANK_COUNT = 8;
     public static final int FILE_COUNT = 8;
     private Piece[][] grid;
@@ -33,6 +33,10 @@ public class Board {
         return FILE_COUNT;
     }
 
+    // public int[] getPieceSquare(Piece piece) {
+        
+    // }
+
     public Piece getPieceAt(int rank, int file) {
         return grid[rank][file];
     }
@@ -53,7 +57,7 @@ public class Board {
     }
 
     // TODO should there be a field to filter by rank and column?
-    public ArrayList<Piece> getFilteredPieces(Piece.Colour pieceColour, Type type) {
+    public ArrayList<Piece> getPieces(Piece.Colour pieceColour, Type type) {
 
         ArrayList<Piece> pieceList = getPieces();
         ArrayList<Piece> filteredPieceList = new ArrayList<Piece>();
@@ -85,12 +89,11 @@ public class Board {
  * @param file file
  * @return valid
  */
-    public static boolean validPosition(int rank, int file) {
-        boolean valid = false;
+    public static boolean inBounds(int rank, int file) {
         if((rank >= 0 && rank < RANK_COUNT) && (file >= 0 && file < FILE_COUNT)) {
-            valid = true;
+            return true;
         }
-        return valid;
+        return false;
     }
 
 }

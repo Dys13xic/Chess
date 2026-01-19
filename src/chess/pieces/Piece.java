@@ -1,5 +1,10 @@
 package chess.pieces;
 
+import java.util.ArrayList;
+
+import chess.BoardView;
+import chess.Move;
+
 public abstract class Piece {
 
     public enum Colour {
@@ -40,5 +45,5 @@ public abstract class Piece {
 
     public abstract char getSymbol();
 
-    public abstract boolean validMovementPattern(int currentRank, int currentFile);
+    public abstract ArrayList<Move> getPseudoLegalMoves(BoardView board);
 }
