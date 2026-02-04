@@ -50,6 +50,22 @@ public abstract class Piece {
 
     public abstract char getSymbol();
 
+    protected ArrayList<PseudoLegalMove> getPseudoLegalMovesAlongAxes(BoardView board) {
+        ArrayList<PseudoLegalMove> moves = new ArrayList<PseudoLegalMove>();
+        Coordinate source = board.getPieceCoordinate(this);
+
+        //TODO implement
+        return moves;
+    }
+
+    protected ArrayList<PseudoLegalMove> getPseudoLegalMovesAlongDiagonals(BoardView board) {
+        ArrayList<PseudoLegalMove> moves = new ArrayList<PseudoLegalMove>();
+        Coordinate source = board.getPieceCoordinate(this);
+
+        //TODO implement
+        return moves;
+    }
+
     protected ArrayList<PseudoLegalMove> getPseudoLegalMovesFromDelta(BoardView board, int[][] deltas) {
         ArrayList<PseudoLegalMove> moves = new ArrayList<PseudoLegalMove>();
         Coordinate source = board.getPieceCoordinate(this);
