@@ -33,12 +33,23 @@ public class Board implements BoardView {
         return FILE_COUNT;
     }
 
-    // public int[] getPieceSquare(Piece piece) {
-        
-    // }
+    @Override
+    public Coordinate getPieceCoordinate(Piece piece) {
+        for (int rank = 0; rank < RANK_COUNT; rank++) {
+            for (int file = 0; file < FILE_COUNT; file++) {
+                if (grid[rank][file] == piece)
+                    return new Coordinate(rank, file);
+            }
+        }
+        return null;
+    }
 
     public Piece getPieceAt(int rank, int file) {
         return grid[rank][file];
+    }
+
+    public Piece getPieceAt(Coordinate coordinate) {
+        return getPieceAt(coordinate.getRank(), coordinate.getFile());
     }
 
     public ArrayList<Piece> getPieces() {
@@ -89,11 +100,14 @@ public class Board implements BoardView {
  * @param file file
  * @return valid
  */
-    public static boolean inBounds(int rank, int file) {
-        if((rank >= 0 && rank < RANK_COUNT) && (file >= 0 && file < FILE_COUNT)) {
+    public boolean inBounds(int rank, int file) {
+        if((rank >= 0 && rank < getRankCount()) && (file >= 0 && file < getFileCount())) {
             return true;
         }
         return false;
     }
 
+    public boolean inBounds(Coordinate coordinate) {
+        return inBounds(coordinate.getRank(), coordinate.getFile());
+    }
 }

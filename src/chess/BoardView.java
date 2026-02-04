@@ -3,6 +3,9 @@ package chess;
 import chess.pieces.Piece;
 
 public interface BoardView {
-    public int[] getPieceSquare(Piece piece);
+    public Coordinate getPieceCoordinate(Piece piece);
     public Piece getPieceAt(int rank, int file);
+    public Piece getPieceAt(Coordinate coordinate);
+    public boolean inBounds(int rank, int file);
+    public boolean inBounds(Coordinate coordinate);
 }
