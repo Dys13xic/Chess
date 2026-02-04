@@ -3,7 +3,7 @@ package chess.pieces;
 import java.util.ArrayList;
 
 import chess.BoardView;
-import chess.Move;
+import chess.PseudoLegalMove;
 
 public abstract class Piece {
 
@@ -49,5 +49,5 @@ public abstract class Piece {
 
     public abstract char getSymbol();
 
-    public abstract ArrayList<Move> getPseudoLegalMoves(BoardView board);
+    public abstract ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board);
 }
