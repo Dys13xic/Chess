@@ -1,5 +1,11 @@
 package chess.pieces;
 
+import java.util.ArrayList;
+
+import chess.BoardView;
+import chess.Coordinate;
+import chess.PseudoLegalMove;
+
 public class Knight extends Piece {
 
     public Knight(Colour colour) {
@@ -12,15 +18,25 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean validMovementPattern(int currentRank, int currentFile) {
-        // // TODO throw exception if board or targetSquare are null
-        // Square sourceSquare = board.getPieceSquare(this);
-        // int rankDifference = targetSquare.getRank() - sourceSquare.getRank();
-        // int fileDifference =  targetSquare.getFile() - sourceSquare.getFile();
+    public ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board) {
+        ArrayList<PseudoLegalMove> moves = new ArrayList<PseudoLegalMove>();
+        Coordinate source = board.getPieceCoordinate(this);
 
-        // if ((Math.abs(rankDifference) != 2 && Math.abs(fileDifference) != 2) || (Math.abs(rankDifference) != 1 && Math.abs(fileDifference) != 1)) {
-        //     return false;
-        // }
-        return true;
+        int[][] deltas = {{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {-2, 1}, {2, -1}, {-2, -1}};
+
+        for (int[] delta : deltas) {
+            Coordinate target = new Coordinate(source.getRank() + delta[0], source.getFile() + delta[1]);
+            if (!board.inBounds(target)) {
+                break;
+            }
+            Piece targetPiece = board.getPieceAt(target);
+            if (targetPiece != null && isFriendly(targetPiece)) {
+                break;
+            }
+            PseudoLegalMove.Type moveType = (targetPiece == null) ? PseudoLegalMove.Type.QUIET : PseudoLegalMove.Type.CAPTURE;
+            moves.add(new PseudoLegalMove(moveType, source, target,null));
+        }
+        
+        return moves;
     }
 }
