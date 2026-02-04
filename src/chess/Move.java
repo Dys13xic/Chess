@@ -36,7 +36,6 @@ public class Move {
     Piece.Type promotedTo;
     boolean capture;
     Check check;
-    String notation;
 
     private Piece.Type charToPieceType(char notation) {
         switch (notation) {
@@ -55,11 +54,11 @@ public class Move {
         }
     }
 
-    private static int fileCharToInt(char file) {
+    private static int fileToIndex(char file) {
         return file - START_FILE;
     }
 
-    private static int rankCharToInt(char rank) {
+    private static int rankToIndex(char rank) {
         return rank - START_RANK;
     }
 
@@ -88,10 +87,10 @@ public class Move {
             piece = Piece.Type.ROOK;
 
             if (notation.startsWith(QUEENSIDE_CASTLING)) {
-                sourceFile = fileCharToInt('h');
+                sourceFile = fileToIndex('h');
             }
             else {
-                sourceFile = fileCharToInt('a');
+                sourceFile = fileToIndex('a');
             }
         }
 
@@ -105,13 +104,13 @@ public class Move {
 
                 // Rank
                 if (START_RANK <= current && current <= END_RANK) {
-                    if (targetRank == -1) targetRank = rankCharToInt(current);
-                    else sourceRank = rankCharToInt(current);
+                    if (targetRank == -1) targetRank = rankToIndex(current);
+                    else sourceRank = rankToIndex(current);
                 }
                 // File
                 else if (START_FILE <= current && current <= END_FILE) {
-                    if (targetFile == -1) targetFile = fileCharToInt(current);
-                    else sourceFile = fileCharToInt(current);
+                    if (targetFile == -1) targetFile = fileToIndex(current);
+                    else sourceFile = fileToIndex(current);
                 }
                 // Piece
                 else if (PIECE_SYMBOLS.contains(Character.toString(current))) {
