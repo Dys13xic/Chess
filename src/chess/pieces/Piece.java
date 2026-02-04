@@ -43,6 +43,10 @@ public abstract class Piece {
         return type;
     }
 
+    protected boolean isFriendly(Piece piece) {
+        return this.colour == piece.colour;
+    }
+
     public abstract char getSymbol();
 
     public abstract ArrayList<Move> getPseudoLegalMoves(BoardView board);
