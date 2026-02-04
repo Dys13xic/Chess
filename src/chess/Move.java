@@ -6,12 +6,6 @@ import chess.pieces.Piece;
 
 public class Move {
     
-    public enum Type {
-        STANDARD,
-        CASTLE,
-        OFFER_DRAW
-    }
-
     public enum Check {
         STANDARD,
         MATE
@@ -26,16 +20,15 @@ public class Move {
     private static final String KINGSIDE_CASTLING = "O-O";
     private static final String QUEENSIDE_CASTLING = "O-O-O";
 
-    // static int move = 1;
-    Type type;
     int sourceRank = -1;
     int sourceFile = -1;
     int targetRank = -1;
     int targetFile = -1;
-    Piece.Type piece;
-    Piece.Type promotedTo;
-    boolean capture;
-    Check check;
+    Piece.Type piece = null;
+    Piece.Type promotedTo = null;
+    boolean capture = false;
+    Check check = null;
+    boolean drawOffer = false;
 
     private Piece.Type charToPieceType(char notation) {
         switch (notation) {
@@ -77,26 +70,26 @@ public class Move {
         }
 
         // Draw Offer
-        if (notation.startsWith("=")) {
-            type = Type.OFFER_DRAW;
+        if (notation.endsWith("(=)")) {
+            drawOffer = true;
         }
 
         // Castle
         else if (notation.startsWith(KINGSIDE_CASTLING)) {
-            type = Type.CASTLE;
             piece = Piece.Type.ROOK;
 
             if (notation.startsWith(QUEENSIDE_CASTLING)) {
                 sourceFile = fileToIndex('h');
+                targetFile = fileToIndex('d');
             }
             else {
                 sourceFile = fileToIndex('a');
+                targetFile = fileToIndex('f');
             }
         }
 
         // Standard Move
         else {
-            type = Type.STANDARD;
             char current = notation.charAt(notation.length() - 1);
 
             for (int i = notation.length() - 1; i >= 0; i--) {
