@@ -3,6 +3,7 @@ package chess.pieces;
 import java.util.ArrayList;
 
 import chess.BoardView;
+import chess.Coordinate;
 import chess.PseudoLegalMove;
 
 public abstract class Piece {
@@ -48,6 +49,26 @@ public abstract class Piece {
     }
 
     public abstract char getSymbol();
+
+    protected ArrayList<PseudoLegalMove> getPseudoLegalMovesFromDelta(BoardView board, int[][] deltas) {
+        ArrayList<PseudoLegalMove> moves = new ArrayList<PseudoLegalMove>();
+        Coordinate source = board.getPieceCoordinate(this);
+
+        for (int[] delta : deltas) {
+            Coordinate target = new Coordinate(source.getRank() + delta[0], source.getFile() + delta[1]);
+            if (!board.inBounds(target)) {
+                break;
+            }
+            Piece targetPiece = board.getPieceAt(target);
+            if (targetPiece != null && isFriendly(targetPiece)) {
+                break;
+            }
+            PseudoLegalMove.Type moveType = (targetPiece == null) ? PseudoLegalMove.Type.QUIET : PseudoLegalMove.Type.CAPTURE;
+            moves.add(new PseudoLegalMove(moveType, source, target,null));
+        }
+        
+        return moves;
+    }
 
     public abstract ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board);
 }

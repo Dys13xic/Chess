@@ -1,5 +1,10 @@
 package chess.pieces;
 
+import java.util.ArrayList;
+
+import chess.BoardView;
+import chess.PseudoLegalMove;
+
 public class King extends Piece {
 
     private boolean inCheck;
@@ -23,15 +28,8 @@ public class King extends Piece {
     }
 
     @Override
-    public boolean validMovementPattern(int currentRank, int currentFile) {
-        // // TODO throw exception if board or targetSquare are null
-        // Square sourceSquare = board.getPieceSquare(this);
-        // int rankDifference = targetSquare.getRank() - sourceSquare.getRank();
-        // int fileDifference =  targetSquare.getFile() - sourceSquare.getFile();
-
-        // if (targetSquare == sourceSquare || Math.abs(rankDifference) > 1 || Math.abs(fileDifference) > 1) {
-        //     return false;
-        // }
-        return true;
+    public ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board) {
+        int[][] deltas = {{1, 1}, {1, 0}, {1, -1}, {0, 1}, {0, -1}, {-1, 1}, {-1, 0}, {-1, -1}};
+        return getPseudoLegalMovesFromDelta(board, deltas);
     }
 }
