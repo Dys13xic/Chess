@@ -1,9 +1,9 @@
 package chess.pieces;
 
-import java.lang.Math;
 import java.util.ArrayList;
 
-import chess.Move;
+import chess.BoardView;
+import chess.PseudoLegalMove;
 
 public class Bishop extends Piece {
 
@@ -17,15 +17,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public ArrayList<Move> getPseudoLegalMoves(int currentRank, int currentFile) {
-        // // TODO throw exception if board or targetSquare are null
-        // Square sourceSquare = board.getPieceSquare(this);
-        // int rankDifference = targetSquare.getRank() - sourceSquare.getRank();
-        // int fileDifference = targetSquare.getFile() - sourceSquare.getFile();
-
-        // if (targetSquare == sourceSquare || Math.abs(rankDifference) != Math.abs(fileDifference)) {
-        //     return false;
-        // }
-        return new ArrayList<Move>();
+    public ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board) {
+        return getPseudoLegalMovesAlongDiagonals(board);
     }
 }
