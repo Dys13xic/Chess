@@ -1,7 +1,6 @@
 package chess;
 
 import chess.pieces.Piece;
-import chess.pieces.Piece.Type;
 
 import java.util.ArrayList;
 
@@ -68,24 +67,23 @@ public class Board implements BoardView {
     }
 
     // TODO should there be a field to filter by rank and column?
-    public ArrayList<Piece> getPieces(Piece.Colour pieceColour, Type type) {
-
+    public <T extends Piece> ArrayList<T> getPiecesOfType(Class<T> type, Piece.Colour colour) {
         ArrayList<Piece> pieceList = getPieces();
-        ArrayList<Piece> filteredPieceList = new ArrayList<Piece>();
+        ArrayList<T> filteredPieceList = new ArrayList<T>();
         Piece currentPiece;
 
         for (int i = 0; i < pieceList.size(); i++) {
             currentPiece = pieceList.get(i);
 
-            // If colour/type is null, do not filter based on that object property.
-            if(pieceColour != null && pieceColour != currentPiece.getColour()) {
+            // If colour is null, do not filter based on that object property.
+            if(colour != null && colour != currentPiece.getColour()) {
                 continue;
             }
-            if(type != null && type != currentPiece.getType()) {
+            if(!type.isInstance(currentPiece)) {
                 continue;
             }
 
-            filteredPieceList.add(currentPiece);
+            filteredPieceList.add(type.cast(currentPiece));
         }
         return filteredPieceList;
     }
