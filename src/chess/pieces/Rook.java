@@ -1,9 +1,21 @@
 package chess.pieces;
 
+import java.util.ArrayList;
+
+import chess.BoardView;
+import chess.PseudoLegalMove;
+
 public class Rook extends Piece {
 
-    public Rook(Colour colour) {
+    boolean moved;
+
+    public Rook(Colour colour, boolean moved) {
         super(colour, Type.ROOK);
+        this.moved = moved;
+    }
+
+    public boolean hasMoved() {
+        return moved;
     }
 
     @Override
@@ -12,16 +24,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public boolean validMovementPattern(int currentRank, int currentFile) {
-        // // TODO throw exception if board or targetSquare are null
-        // Square sourceSquare = board.getPieceSquare(this);
-        // int rankDifference = targetSquare.getRank() - sourceSquare.getRank();
-        // int fileDifference = targetSquare.getFile() - sourceSquare.getFile();
-
-        // if (targetSquare == sourceSquare || (rankDifference != 0 && fileDifference != 0)) {
-        //     return false;
-        // }
-        return true;
-
+    public ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board) {
+        return getPseudoLegalMovesAlongAxes(board);
     }
 }

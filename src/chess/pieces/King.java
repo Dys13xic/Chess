@@ -8,14 +8,20 @@ import chess.PseudoLegalMove;
 public class King extends Piece {
 
     private boolean inCheck;
+    private boolean moved;
 
-    public King(Colour colour, boolean inCheck) {
+    public King(Colour colour, boolean inCheck, boolean moved) {
         super(colour, Type.KING);
         this.inCheck = inCheck;
+        this.moved = moved;
     }
 
     public boolean getInCheck() {
         return inCheck;
+    }
+
+    public boolean hasMoved() {
+        return moved;
     }
 
     public void setInCheck(boolean inCheck) {
