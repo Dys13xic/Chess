@@ -50,19 +50,32 @@ public abstract class Piece {
 
     public abstract char getSymbol();
 
-    protected ArrayList<PseudoLegalMove> getPseudoLegalMovesAlongAxes(BoardView board) {
-        ArrayList<PseudoLegalMove> moves = new ArrayList<PseudoLegalMove>();
-        Coordinate source = board.getPieceCoordinate(this);
 
-        //TODO implement
-        return moves;
+    private PseudoLegalMove buildPseudoLegalMove(BoardView board, Coordinate source, Coordinate target) {
+        Piece targetPiece = board.getPieceAt(target);
+        if (targetPiece != null && 
+            (isFriendly(targetPiece) || targetPiece.type == Piece.Type.KING)) return null;
+    
+        PseudoLegalMove.Type moveType = (targetPiece == null) ? PseudoLegalMove.Type.QUIET : PseudoLegalMove.Type.CAPTURE;
+        return new PseudoLegalMove(moveType, source, target, null);
     }
 
-    protected ArrayList<PseudoLegalMove> getPseudoLegalMovesAlongDiagonals(BoardView board) {
+    protected ArrayList<PseudoLegalMove> getPseudoLegalMovesFromVector(BoardView board, int[][] movementVectors) {
         ArrayList<PseudoLegalMove> moves = new ArrayList<PseudoLegalMove>();
         Coordinate source = board.getPieceCoordinate(this);
+        for (int[] vector : movementVectors) {
+            // TODO should I add a size check to the arraylist?
+            int rankStep = vector[0];
+            int fileStep = vector[1];
+            Coordinate target = new Coordinate(source.getRank() - rankStep, source.getFile() - fileStep);
 
-        //TODO implement
+            while(board.inBounds(target)) {
+                PseudoLegalMove move = buildPseudoLegalMove(board, source, target);
+                if (move == null) break;
+                moves.add(move);
+                target = new Coordinate(target.getRank() - rankStep, target.getFile() - fileStep);
+            }
+        }
         return moves;
     }
 
@@ -72,17 +85,11 @@ public abstract class Piece {
 
         for (int[] delta : deltas) {
             Coordinate target = new Coordinate(source.getRank() + delta[0], source.getFile() + delta[1]);
-            if (!board.inBounds(target)) {
-                break;
-            }
-            Piece targetPiece = board.getPieceAt(target);
-            if (targetPiece != null && isFriendly(targetPiece)) {
-                break;
-            }
-            PseudoLegalMove.Type moveType = (targetPiece == null) ? PseudoLegalMove.Type.QUIET : PseudoLegalMove.Type.CAPTURE;
-            moves.add(new PseudoLegalMove(moveType, source, target,null));
+            if (!board.inBounds(target)) break;
+            PseudoLegalMove move = buildPseudoLegalMove(board, source, target);
+            if (move == null) break;
+            moves.add(move);
         }
-        
         return moves;
     }
 
