@@ -15,4 +15,20 @@ public class PseudoLegalMove {
         this.target = target;
         this.promotion = promotion;
     }
+
+    public Piece getCapture() {
+        return capture;
+    }
+
+    public Coordinate getSource() {
+        return source;
+    }
+
+    public Coordinate getTarget() {
+        return target;
+    }
+
+    public Piece.Type promotedTo() {
+        return promotion;
+    }
 }
