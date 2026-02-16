@@ -13,7 +13,7 @@ public class Rook extends Piece {
         {-1, 0},
         {0, -1}
     };
-    boolean moved;
+    private boolean moved;
 
     public Rook(Colour colour, boolean moved) {
         super(colour, Type.ROOK);
