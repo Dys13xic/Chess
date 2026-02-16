@@ -7,8 +7,25 @@ import chess.PseudoLegalMove;
 
 public class Queen extends Piece {
 
+    private static final int[][] MOVEMENT_VECTORS = {
+        // Axes
+        {1, 0},
+        {0, 1},
+        {-1, 0},
+        {0, -1},
+        // Diagonals
+        {1, 1},
+        {1, -1},
+        {-1, 1},
+        {-1, -1}
+    };
+
     public Queen(Colour colour) {
         super(colour, Type.QUEEN);
+    }
+
+    public int[][] getMovementVectors() {
+        return MOVEMENT_VECTORS;
     }
 
     @Override
@@ -17,9 +34,6 @@ public class Queen extends Piece {
     }
     @Override
     public ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board) {
-        ArrayList<PseudoLegalMove> moves = new ArrayList<PseudoLegalMove>();
-        moves.addAll(getPseudoLegalMovesAlongAxes(board));
-        moves.addAll(getPseudoLegalMovesAlongDiagonals(board));
-        return moves;
+        return getPseudoLegalMovesFromVector(board, getMovementVectors());
     }
 }

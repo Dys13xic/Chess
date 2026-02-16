@@ -7,8 +7,19 @@ import chess.PseudoLegalMove;
 
 public class Bishop extends Piece {
 
+    private static final int[][] MOVEMENT_VECTORS = {
+        {1, 1},
+        {1, -1},
+        {-1, 1},
+        {-1, -1}
+    };
+
     public Bishop(Colour colour) {
         super(colour, Type.BISHOP);
+    }
+
+    public int[][] getMovementVectors() {
+        return MOVEMENT_VECTORS;
     }
 
     @Override
@@ -18,6 +29,6 @@ public class Bishop extends Piece {
 
     @Override
     public ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board) {
-        return getPseudoLegalMovesAlongDiagonals(board);
+        return getPseudoLegalMovesFromVector(board, getMovementVectors());
     }
 }

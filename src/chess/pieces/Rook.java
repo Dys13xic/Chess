@@ -7,11 +7,21 @@ import chess.PseudoLegalMove;
 
 public class Rook extends Piece {
 
+    private static final int[][] MOVEMENT_VECTORS = {
+        {1, 0},
+        {0, 1},
+        {-1, 0},
+        {0, -1}
+    };
     boolean moved;
 
     public Rook(Colour colour, boolean moved) {
         super(colour, Type.ROOK);
         this.moved = moved;
+    }
+
+    public int[][] getMovementVectors() {
+        return MOVEMENT_VECTORS;
     }
 
     public boolean hasMoved() {
@@ -25,6 +35,6 @@ public class Rook extends Piece {
 
     @Override
     public ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board) {
-        return getPseudoLegalMovesAlongAxes(board);
+        return getPseudoLegalMovesFromVector(board, getMovementVectors());
     }
 }
