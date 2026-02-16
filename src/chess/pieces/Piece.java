@@ -1,6 +1,8 @@
 package chess.pieces;
 
 import java.util.ArrayList;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import chess.BoardView;
 import chess.Coordinate;
@@ -48,13 +50,10 @@ public abstract class Piece {
         return this.colour == piece.colour;
     }
 
-    public abstract char getSymbol();
-
-
     private PseudoLegalMove buildPseudoLegalMove(BoardView board, Coordinate source, Coordinate target) {
         Piece targetPiece = board.getPieceAt(target);
         // Note: includes moves that explicitly capture the enemy king.
-        if (targetPiece != null && isFriendly(targetPiece)) return null;    
+        if (targetPiece != null && isFriendly(targetPiece)) return null;
         return new PseudoLegalMove(targetPiece, source, target, null);
     }
 
@@ -91,5 +90,6 @@ public abstract class Piece {
         return moves;
     }
 
+    public abstract char getSymbol();
     public abstract ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board);
 }
