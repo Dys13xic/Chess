@@ -53,8 +53,8 @@ public abstract class Piece {
 
     private PseudoLegalMove buildPseudoLegalMove(BoardView board, Coordinate source, Coordinate target) {
         Piece targetPiece = board.getPieceAt(target);
-        if (targetPiece != null && 
-            (isFriendly(targetPiece) || targetPiece.type == Piece.Type.KING)) return null;
+        // Note: includes moves that explicitly capture the enemy king.
+        if (targetPiece != null && isFriendly(targetPiece)) return null;
     
         PseudoLegalMove.Type moveType = (targetPiece == null) ? PseudoLegalMove.Type.QUIET : PseudoLegalMove.Type.CAPTURE;
         return new PseudoLegalMove(moveType, source, target, null);
