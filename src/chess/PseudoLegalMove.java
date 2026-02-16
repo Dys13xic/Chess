@@ -4,18 +4,13 @@ import chess.pieces.Piece;
 
 public class PseudoLegalMove {
 
-    public enum Type {
-        QUIET,
-        CAPTURE
-    }
-
-    Type type;
+    Piece capture;
     Coordinate source;
     Coordinate target;
     Piece.Type promotion;
 
-    public PseudoLegalMove(Type type, Coordinate source, Coordinate target, Piece.Type promotion) {
-        this.type = type;
+    public PseudoLegalMove(Piece capture, Coordinate source, Coordinate target, Piece.Type promotion) {
+        this.capture = capture;
         this.source = source;
         this.target = target;
         this.promotion = promotion;
