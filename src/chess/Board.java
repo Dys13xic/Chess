@@ -108,4 +108,18 @@ public class Board implements BoardView {
     public boolean inBounds(Coordinate coordinate) {
         return inBounds(coordinate.getRank(), coordinate.getFile());
     }
+
+    public boolean isPromotionSquare(Piece piece) {
+        Coordinate source = getPieceCoordinate(piece);
+        if (piece.getType() != Piece.Type.PAWN) {
+            return false;
+        }
+        if (piece.getColour() == Piece.Colour.WHITE && source.getRank() != 0) {
+            return false;
+        }
+        if (piece.getColour() == Piece.Colour.BLACK && source.getRank() != RANK_COUNT - 1) {
+            return false;
+        }
+        return true;
+    }
 }
