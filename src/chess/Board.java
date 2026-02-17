@@ -109,17 +109,13 @@ public class Board implements BoardView {
         return inBounds(coordinate.getRank(), coordinate.getFile());
     }
 
-    public boolean isPromotionSquare(Piece piece) {
-        Coordinate source = getPieceCoordinate(piece);
-        if (piece.getType() != Piece.Type.PAWN) {
-            return false;
+    public boolean isPromotionSquare(Piece.Colour colour, Coordinate target) {
+        if (colour == Piece.Colour.WHITE && target.getRank() == 0) {
+            return true;
         }
-        if (piece.getColour() == Piece.Colour.WHITE && source.getRank() != 0) {
-            return false;
+        if (colour == Piece.Colour.BLACK && target.getRank() == RANK_COUNT - 1) {
+            return true;
         }
-        if (piece.getColour() == Piece.Colour.BLACK && source.getRank() != RANK_COUNT - 1) {
-            return false;
-        }
-        return true;
+        return false;
     }
 }

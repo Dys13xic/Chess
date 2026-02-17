@@ -8,5 +8,5 @@ public interface BoardView {
     public Piece getPieceAt(Coordinate coordinate);
     public boolean inBounds(int rank, int file);
     public boolean inBounds(Coordinate coordinate);
-    public boolean isPromotionSquare(Piece piece);
+    public boolean isPromotionSquare(Piece.Colour colour, Coordinate target);
 }
