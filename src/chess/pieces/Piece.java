@@ -1,8 +1,6 @@
 package chess.pieces;
 
 import java.util.ArrayList;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import chess.BoardView;
 import chess.Coordinate;
