@@ -9,7 +9,7 @@ import chess.positionformats.PositionFormats;
 
 public class Game {
     private boolean active = true;
-    private Board chessBoard;
+    private Board board;
     private ArrayList<Move> moves;
     private Piece.Colour activePlayer;
     private int halfMoveClock;
@@ -22,9 +22,9 @@ public class Game {
     }
 
     public Game(PositionFormats format) {
-        chessBoard = new Board();
+        board = new Board();
 
-        format.loadPosition(chessBoard);
+        format.loadPosition(board);
         moves = format.getMoves();
         activePlayer = format.getActivePlayer();
         halfMoveClock = format.getHalfMoveClock();
@@ -49,7 +49,7 @@ public class Game {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         while (isActive()) {
-            Graphics.drawBoard(chessBoard);
+            Graphics.drawBoard(board);
             System.out.print("Enter a move: ");
             Move tentativeMove = new Move(scanner.nextLine());
             // Board.move(tentativeMove);
