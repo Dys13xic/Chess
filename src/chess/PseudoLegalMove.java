@@ -16,6 +16,13 @@ public class PseudoLegalMove {
         this.promotion = promotion;
     }
 
+    public PseudoLegalMove(PseudoLegalMove move, Piece.Type promotion) {
+        this.capture = move.getCapture();
+        this.source = move.getSource();
+        this.target = move.getTarget();
+        this.promotion = promotion;
+    }
+
     public Piece getCapture() {
         return capture;
     }
