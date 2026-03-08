@@ -1,11 +1,39 @@
 package chess.pieces;
 
-public class Pawn extends Piece {
-    private boolean enPassantTarget;
+import java.util.ArrayList;
 
-    public Pawn(Colour colour, boolean enPassantTarget) {
+import chess.Coordinate;
+import chess.BoardView;
+import chess.PseudoLegalMove;
+
+public class Pawn extends Piece {
+
+    private static final Piece.Type[] validPromotions = {
+        Type.ROOK,
+        Type.KNIGHT,
+        Type.BISHOP,
+        Type.QUEEN
+    };
+
+    private boolean enPassantTarget;
+    boolean moved;
+
+    public Pawn(Colour colour, boolean moved, boolean enPassantTarget) {
         super(colour, Type.PAWN);
+        this.moved = moved;
         this.enPassantTarget = enPassantTarget;
+    }
+
+    public static Piece.Type[] getValidPromotions() {
+        return validPromotions;
+    }
+
+    public boolean hasMoved() {
+        return moved;
+    }
+
+    public boolean validEnPassantTarget() {
+        return enPassantTarget;
     }
 
     @Override
@@ -14,16 +42,55 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean validMovementPattern(int currentRank, int currentFile) {
-        // // TODO throw exception if board or targetSquare are null
-        // Square sourceSquare = board.getPieceSquare(this);
-        // int advanceIncrement = (sourceSquare.getPiece().getColour() == Colour.WHITE) ? 1 : -1;
-        // int rankDifference = targetSquare.getRank() - sourceSquare.getRank();
-        // int fileDifference =  targetSquare.getFile() - sourceSquare.getFile();
+    public ArrayList<PseudoLegalMove> getPseudoLegalMoves(BoardView board) {
+        int directionOfTravel = getColour() == Piece.Colour.WHITE ? 1 : -1;
+        Coordinate source = board.getPieceCoordinate(this);
+        ArrayList<PseudoLegalMove> moves = new ArrayList<PseudoLegalMove>();
+        ArrayList<PseudoLegalMove> tempMoves = new ArrayList<PseudoLegalMove>();
 
-        // if (rankDifference != advanceIncrement || (fileDifference >= -1 && fileDifference <= 1)) {
-        //     return false;
-        // }
-        return true;
+        // Forward movement.
+        int movementLimit = hasMoved() ? 1 : 2;
+        int[][] movementVectors = {{directionOfTravel, 0, movementLimit}};
+        tempMoves.addAll(getPseudoLegalMovesFromVector(board, movementVectors));
+
+        // Diagonal captures.
+        int[][] deltas = {{directionOfTravel, 1}, {directionOfTravel, -1}};
+        tempMoves.addAll(getPseudoLegalMovesFromDelta(board, deltas));
+
+        // En passant captures. (Never includes promotion).
+        deltas = new int[][]{{0, 1}, {0, -1}};
+        for (int[] delta : deltas) {
+            Coordinate tempTarget = new Coordinate(source.getRank() + delta[0], source.getFile() + delta[1]);
+            Coordinate finalTarget = new Coordinate(tempTarget.getRank() + directionOfTravel, tempTarget.getFile());
+            
+            if (!board.inBounds(tempTarget) || !board.inBounds(finalTarget)) continue;
+            Piece targetPiece = board.getPieceAt(tempTarget);
+            
+            if (targetPiece == null ||
+                targetPiece.isFriendly(this) ||
+                board.getPieceAt(finalTarget) != null
+            ) continue;
+
+            if (Pawn.class.isInstance(targetPiece)) {
+                Pawn targetPawn = Pawn.class.cast(targetPiece);
+                if (targetPawn.validEnPassantTarget()) {
+                    moves.add(new PseudoLegalMove(targetPiece, source, finalTarget, null));
+                }
+            }
+        }
+
+        // Expand promotion moves
+        for (PseudoLegalMove move : tempMoves) {
+            if (board.isPromotionSquare(getColour(), move.getTarget())) {
+                for (Piece.Type promotion : getValidPromotions()) {
+                    moves.add(new PseudoLegalMove(move, promotion));
+                }
+            }
+            else {
+                moves.add(move);
+            }
+        }
+
+        return moves;
     }
 }
