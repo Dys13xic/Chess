@@ -55,6 +55,11 @@ public abstract class Piece {
         return new PseudoLegalMove(targetPiece, source, target, null);
     }
 
+    private boolean withinStepLimit(int stepCount, int limit) {
+        if (limit > 0) return stepCount < limit;
+        return true;
+    }
+
     protected ArrayList<PseudoLegalMove> getPseudoLegalMovesFromVector(BoardView board, int[][] movementVectors) {
         ArrayList<PseudoLegalMove> moves = new ArrayList<PseudoLegalMove>();
         Coordinate source = board.getPieceCoordinate(this);
@@ -62,13 +67,17 @@ public abstract class Piece {
             // TODO should I add a size check to the arraylist?
             int rankStep = vector[0];
             int fileStep = vector[1];
+            int limit = (vector.length == 3) ? vector[2] : 0; 
+
             Coordinate target = new Coordinate(source.getRank() - rankStep, source.getFile() - fileStep);
 
-            while(board.inBounds(target)) {
+            int stepCount = 0;
+            while(board.inBounds(target) && withinStepLimit(stepCount, limit)) {
                 PseudoLegalMove move = buildPseudoLegalMove(board, source, target);
                 if (move == null) break;
                 moves.add(move);
                 target = new Coordinate(target.getRank() - rankStep, target.getFile() - fileStep);
+                stepCount++;
             }
         }
         return moves;
