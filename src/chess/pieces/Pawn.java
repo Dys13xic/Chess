@@ -36,6 +36,10 @@ public class Pawn extends Piece {
         return enPassantTarget;
     }
 
+    public void setEnPassantTarget(boolean value) {
+        enPassantTarget = value;
+    }
+
     @Override
     public char getSymbol() {
         return getColour() == Colour.WHITE ? '\u2659' : '\u265F';
