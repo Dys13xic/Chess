@@ -14,6 +14,11 @@ public class Coordinate {
         file = coordinate.getFile();
     }
 
+    public Coordinate(String algebraicNotation) {
+        file = algebraicNotation.charAt(0) - 'a';
+        rank = algebraicNotation.charAt(1) - '0';
+    }
+
     public int getRank() {
         return rank;
     }
