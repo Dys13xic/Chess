@@ -1,5 +1,6 @@
 package chess;
 
+import chess.pieces.Pawn;
 import chess.pieces.Piece;
 
 import java.util.ArrayList;
@@ -7,6 +8,11 @@ import java.util.ArrayList;
 public class Board implements BoardView {
     public static final int RANK_COUNT = 8;
     public static final int FILE_COUNT = 8;
+
+    public static final int BLACK_BACK_RANK = RANK_COUNT - 1;
+    public static final int BLACK_PAWN_RANK = RANK_COUNT - 2;
+    public static final int WHITE_BACK_RANK = 0;
+    public static final int WHITE_PAWN_RANK = 1;
     private Piece[][] grid;
 
     public enum Square {
@@ -110,12 +116,36 @@ public class Board implements BoardView {
     }
 
     public boolean isPromotionSquare(Piece.Colour colour, Coordinate target) {
-        if (colour == Piece.Colour.WHITE && target.getRank() == 0) {
+        if (colour == Piece.Colour.WHITE && target.getRank() == WHITE_BACK_RANK) {
             return true;
         }
-        if (colour == Piece.Colour.BLACK && target.getRank() == RANK_COUNT - 1) {
+        if (colour == Piece.Colour.BLACK && target.getRank() == BLACK_BACK_RANK) {
             return true;
         }
         return false;
+    }
+
+    public boolean isStartingRank(Piece.Colour colour, Piece.Type type, Coordinate target) {
+        if (colour == Piece.Colour.WHITE) {
+            int startingRank = (type == Piece.Type.PAWN) ? WHITE_PAWN_RANK : WHITE_BACK_RANK;
+            return target.getRank() == startingRank;
+        }
+        if (colour == Piece.Colour.BLACK) {
+            int startingRank = (type == Piece.Type.PAWN) ? BLACK_PAWN_RANK : BLACK_BACK_RANK;
+            return target.getRank() == startingRank;
+        }
+        return false;
+    }
+
+    public boolean onStartingRank(Piece piece) {
+        return isStartingRank(piece.getColour(), piece.getType(), getPieceCoordinate(piece));
+    }
+
+    public Piece.Colour getHalf(Coordinate target) {
+        return target.getRank() < (RANK_COUNT / 2) ? Piece.Colour.WHITE : Piece.Colour.BLACK;
+    }
+
+    public void clear() {
+        grid = new Piece[getRankCount()][getFileCount()];
     }
 }
