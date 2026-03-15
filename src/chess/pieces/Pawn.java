@@ -16,20 +16,14 @@ public class Pawn extends Piece {
     };
 
     private boolean enPassantTarget;
-    boolean moved;
 
-    public Pawn(Colour colour, boolean moved, boolean enPassantTarget) {
+    public Pawn(Colour colour, boolean enPassantTarget) {
         super(colour, Type.PAWN);
-        this.moved = moved;
         this.enPassantTarget = enPassantTarget;
     }
 
     public static Piece.Type[] getValidPromotions() {
         return validPromotions;
-    }
-
-    public boolean hasMoved() {
-        return moved;
     }
 
     public boolean validEnPassantTarget() {
@@ -53,7 +47,7 @@ public class Pawn extends Piece {
         ArrayList<PseudoLegalMove> tempMoves = new ArrayList<PseudoLegalMove>();
 
         // Forward movement.
-        int movementLimit = hasMoved() ? 1 : 2;
+        int movementLimit = board.onStartingRank(this) ? 1 : 2;
         int[][] movementVectors = {{directionOfTravel, 0, movementLimit}};
         tempMoves.addAll(getPseudoLegalMovesFromVector(board, movementVectors));
 
