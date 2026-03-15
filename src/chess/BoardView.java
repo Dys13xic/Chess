@@ -9,4 +9,5 @@ public interface BoardView {
     public boolean inBounds(int rank, int file);
     public boolean inBounds(Coordinate coordinate);
     public boolean isPromotionSquare(Piece.Colour colour, Coordinate target);
+    public boolean onStartingRank(Piece piece);
 }
