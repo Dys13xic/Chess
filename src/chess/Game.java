@@ -28,6 +28,7 @@ public class Game {
         moves = format.getMoves();
         activePlayer = format.getActivePlayer();
         halfMoveClock = format.getHalfMoveClock();
+         // TODO determine if in check at the start of every move (including the first one as that isn't checked by the FEN loader)
     }
 
     public boolean isActive() {
