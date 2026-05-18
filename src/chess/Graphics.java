@@ -4,6 +4,7 @@ import chess.pieces.Piece;
 
 public class Graphics {
 
+    public static final String ANSI_ESCAPE = "\003[";
     public static final String ANSI_RESET_COLOUR = "\u001B[0m";
 
     /**
@@ -18,10 +19,10 @@ public class Graphics {
         if (foreground == null || background == null) {  // TODO add regex check for formatting
             throw new IllegalArgumentException();
         }
-        // Remove ANSI escape code terminating character 'm'
-        foreground = foreground.substring(0, foreground.length() -1 );
-        // Extract colour defining portion of ANSI escape code, i.e. remove "\033["
-        background = background.substring(2);
+        // Remove early terminating character
+        foreground = foreground.substring(0, foreground.length() - 1);
+        // Remove duplicate ANSI escape
+        background = background.substring(ANSI_ESCAPE.length());
 
         return (foreground + ';' + background);
     }
