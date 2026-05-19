@@ -20,6 +20,9 @@ public class Fen implements PositionFormats{
     int halfMoveClock;
     int moveCount;
 
+    public static final String STANDARD_POSITION = "rnbqkbnr/pppppppp/////PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+
     public Fen(String notation) {
         // Validate FEN structure
         if (!notation.matches("^([rnbqkpRNBQKP1-8]{1,8}\\/){7}[rnbqkpRNBQKP1-8]{1,8}\\s[w,b]\\s([kqKQ]{1,4}|-)\\s(([a-h][3,6])|-)\\s\\d{1,3}\\s\\d{1,3}$")) {
