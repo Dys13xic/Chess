@@ -9,9 +9,14 @@ public class Position {
     private Board board;
     private int moveCount;
     private int halfMoveClock;
-    private byte castleRights;
+    private CastleRights[] castleRights;
     private Piece.Colour activePlayer;
 
+    enum CastleRights {
+        KINGSIDE,
+        QUEENSIDE,
+        BOTH;
+    }
 
     public Position() {
         this(new Fen(Fen.STANDARD_POSITION));
@@ -36,6 +41,28 @@ public class Position {
 
     public Piece.Colour getActivePlayer() {
         return activePlayer;
+    }
+
+    private CastleRights getCastleRights(Piece.Colour player) {
+        return this.castleRights[player.index];
+    }
+
+    private void removeCastleRights(Piece.Colour player, CastleRights side) {
+        if (side == null) return;
+        
+        CastleRights current = this.getCastleRights(player);
+        CastleRights updated = current;
+
+        if (current == CastleRights.BOTH) {
+            if (side == CastleRights.KINGSIDE) updated = CastleRights.QUEENSIDE;
+            else if (side == CastleRights.QUEENSIDE) updated = CastleRights.KINGSIDE;
+            else updated = null;
+        }
+        else if (current == side) {
+            updated = null;
+        }
+
+        this.castleRights[player.index] = updated;
     }
 
     public void draw() {
