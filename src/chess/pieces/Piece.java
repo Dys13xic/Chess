@@ -9,13 +9,15 @@ import chess.PseudoLegalMove;
 public abstract class Piece {
 
     public enum Colour {
-        WHITE("\033[38;5;0m"),
-        BLACK("\033[38;5;0m");
+        WHITE("\033[38;5;0m", 0),
+        BLACK("\033[38;5;0m", 1);
 
         public final String ansiString;
+        public final int index;
 
-        private Colour(String ansiString) {
+        private Colour(String ansiString, int index) {
             this.ansiString = ansiString;
+            this.index = index;
         }
     }
 
