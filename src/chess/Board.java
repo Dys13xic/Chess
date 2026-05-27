@@ -58,15 +58,21 @@ public class Board implements BoardView {
     }
 
     public ArrayList<Piece> getPieces() {
+        return getPieces(null);
+    }
+
+    public ArrayList<Piece> getPieces(Piece.Colour colour) {
         ArrayList<Piece> pieces = new ArrayList<Piece>();
         
         for (int rank = 0; rank < RANK_COUNT; rank++) {
             for (int file = 0; file < FILE_COUNT; file++) {
                 Piece currentPiece = grid[rank][file];
 
-                if (currentPiece != null) {
-                    pieces.add(currentPiece);
-                }
+                boolean emptySquare = currentPiece == null;
+                boolean wrongColour = colour != null && colour != currentPiece.getColour();
+                if (emptySquare || wrongColour) continue;
+
+                pieces.add(currentPiece);
             }
         }
         return pieces;
