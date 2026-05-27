@@ -1,6 +1,7 @@
 package chess;
 import java.util.ArrayList;
 
+import chess.pieces.King;
 import chess.pieces.Piece;
 import chess.positionformats.Fen;
 import chess.positionformats.PositionFormats;
@@ -49,7 +50,7 @@ public class Position {
 
     private void removeCastleRights(Piece.Colour player, CastleRights side) {
         if (side == null) return;
-        
+
         CastleRights current = this.getCastleRights(player);
         CastleRights updated = current;
 
@@ -63,6 +64,38 @@ public class Position {
         }
 
         this.castleRights[player.index] = updated;
+    }
+
+    private ArrayList<Move> getLegalMoves() {
+        ArrayList<Move> legalMoves = new ArrayList<Move>();
+        ArrayList<PseudoLegalMove> pseudolegalMoves = new ArrayList<PseudoLegalMove>();
+
+        ArrayList<Piece> activePieces = this.board.getPieces(this.activePlayer);
+        for (Piece piece : activePieces) {
+            pseudolegalMoves.addAll(piece.getPseudoLegalMoves(board));
+        }
+
+        // TODO handle castling checks
+
+        // TODO validate moves
+        // -----------------------------------------
+        for (PseudoLegalMove pseudolegalMove : pseudolegalMoves) {
+            // Make move
+            // Check if king attacked - can just check along diagonal, rank/file, knight pattern, pawn pattern to validate
+            King activeKing = board.getPiecesOfType(King.class, activePlayer).get(0);
+            Coordinate target = board.getPieceCoordinate(activeKing);
+
+            boolean check = board.underAttack();
+            // Undo the move
+
+
+            // Add/Delete accordingly
+            if (!check) {
+                legalMoves.add(new Move(pseudolegalMove));
+            }
+        }
+
+        return legalMoves;
     }
 
     public void draw() {
